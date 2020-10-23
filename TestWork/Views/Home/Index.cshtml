@@ -1,31 +1,87 @@
-﻿@{
+﻿@model IEnumerable<TestWork.Models.Map>
+@{
     ViewBag.Title = "Home Page";
 }
+<script>
+    function isValidUrl() {
+        try {
+            var val = document.getElementById('website').value;
+            new URL(val);
+        } catch (_) {
+            event.preventDefault(); 
+            alert("Invalid url");
+        }
+        return true;
+    }
+</script>
+<form action="/Home/Index" method="post">
+    <div class="form-row" id="uriForm">
+        <div class="col-md-6 mb-3">
+            <label for="validationServer01">Enter URL:</label>
+            <div class="col-sm-6">
+                <input id="website" type="text" class="form-control" name="website" value="" />
+            </div>
+        </div>
+    </div>
+    <button onclick="isValidUrl()" class="btn btn-primary" type="submit">Submit</button>
+</form>
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<div id="chartContainer" style="height: 350px;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+@if (Model != null)
+{
+    <div id="table" class="table table-striped" cellspacing="0" width="100%">
+        <table class="table">
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    URL
+                </th>
+                <th>
+                    Speed
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Url)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Speed) msec.
+                    </td>
+                </tr>
+            }
+        </table>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+}
+<script type="text/javascript">
+    window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+				theme: "light2",
+                animationEnabled: true,
+
+				title: {
+                    text: "Loading Speed",
+                },
+                subtitles: [{
+                    text: "ID/MS"
+                }],
+				data: [
+				{
+                        type: "column",
+                        //color: "green",
+					dataPoints: @Html.Raw(ViewBag.DataPoints),
+				}
+				]
+			});
+			chart.render();
+		};
+</script>

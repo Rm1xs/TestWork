@@ -1,0 +1,45 @@
+﻿@model IEnumerable<TestWork.EF.History>
+
+@{
+    ViewBag.Title = "History";
+}
+<table class="table">
+    <tr>
+        <th>
+            URL
+        </th>
+        <th>
+            Date
+        </th>
+        <th>
+            Duration
+        </th>
+        <th>
+            Slowes
+        </th>
+        <th>
+            Fastest
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.URL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateCheck)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeForCheck) sec.
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MaxValue) msec.
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MinValue) msec.
+        </td>
+    </tr>
+}
+
+</table>

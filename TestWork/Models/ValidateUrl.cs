@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace TestWork.Models
+﻿namespace TestWork.Models
 {
     public static class ValidateUrl
     {
