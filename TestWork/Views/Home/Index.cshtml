@@ -2,19 +2,30 @@
 @{
     ViewBag.Title = "Home Page";
 }
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css" />
+<script src="~/Scripts/valid.js"></script>
 <script>
     function isValidUrl() {
         try {
             var val = document.getElementById('website').value;
             new URL(val);
         } catch (_) {
-            event.preventDefault(); 
+            event.preventDefault();
             alert("Invalid url");
         }
         return true;
     }
 </script>
-<form action="/Home/Index" method="post">
+<script>
+    if (@ViewData["Message"] != null)
+    {
+        alert(@ViewData["Message"]);
+        @ViewData["Message"] = null;
+    }
+</script>
+<form action="/Home/Index" method="post" style="margin-top:2%;">
     <div class="form-row" id="uriForm">
         <div class="col-md-6 mb-3">
             <label for="validationServer01">Enter URL:</label>
@@ -49,7 +60,7 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Id)
+                        @Html.DisplayFor(modelItem => item.IdNumb)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Url)

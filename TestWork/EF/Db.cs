@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using TestWork.EF;
 
 namespace TestWork.Models
@@ -13,7 +12,7 @@ namespace TestWork.Models
         {
             using (ApplicationContext context = new ApplicationContext())
             {
-                var chekinfo = context.Histories.Where(x => x.URL == url).FirstOrDefault();
+                var chekinfo = context.Histories.Where(x => x.URL == url).Include(x => x.ChildURLs).FirstOrDefault();
                 if (chekinfo == null)
                 {
                     History history = new History { ChildURLs = maps.ToList(), DateCheck = DateTime.Now, URL = url, TimeForCheck = time, MaxValue = maps.ElementAt(0).Speed, MinValue = maps.LastOrDefault().Speed };

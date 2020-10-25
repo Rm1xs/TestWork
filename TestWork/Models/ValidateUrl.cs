@@ -4,7 +4,7 @@
     {
         public static string CheckURL(string url)
         {
-            if (url.Contains("sitemap.xml") && url.Contains("/sitemap.xml"))
+            if (url.Contains(".xml") || url.Contains("/sitemap.xml"))
             {
                 return url;
             }

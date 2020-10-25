@@ -39,6 +39,9 @@
         <td>
             @Html.DisplayFor(modelItem => item.MinValue) msec.
         </td>
+        <td>
+            <a href=@Url.Action("Details", "Home", new RouteValueDictionary { { "Id", @Html.DisplayFor(modelItem => item.Id) } }, Request.Url.Scheme, Request.Url.Host)>More info</a>         
+        </td>
     </tr>
 }
 

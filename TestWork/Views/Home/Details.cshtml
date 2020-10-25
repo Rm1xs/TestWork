@@ -1,0 +1,111 @@
+﻿@model TestWork.EF.History
+
+@{
+    ViewBag.Title = "Details";
+}
+<div>
+    <h4 style="margin-top:2%;">Details for @Html.DisplayFor(model => model.URL)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            URL
+        </dt>
+
+        <dd>
+            <a href="@Html.DisplayFor(model => model.URL)">@Html.DisplayFor(model => model.URL)</a>
+        </dd>
+
+        <dt>
+            Date
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateCheck)
+        </dd>
+
+        <dt>
+            Duration
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeForCheck)
+        </dd>
+
+        <dt>
+            Slowest
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaxValue) msec.
+        </dd>
+
+        <dt>
+            Fastest
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MinValue) msec.
+        </dd>
+    </dl>
+    <hr />
+
+    <div id="chartContainer" style="height: 350px;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+    <hr />
+
+    <div style="width:100%; margin:0 auto;">
+        <table class="table table-striped table-bordered dt-responsive nowrap" id="display">
+            <thead>
+                <tr>
+                    <th>URL</th>
+                    <th>Speed</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet" />
+@section Scripts{
+    <script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#display').DataTable({
+                searching: false,
+                processing: true,
+                //serverSide: false,
+                "ajax": "/home/getdata/" + @Html.DisplayFor(model => model.Id),
+                "columns": [
+                    { "data": "URL" },
+                    { "data": "Speed" }
+                ]
+            });
+        });
+    </script>
+}
+
+<script type="text/javascript">
+    window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+				theme: "light2",
+                animationEnabled: true,
+
+				title: {
+                    text: "Loading Speed",
+                },
+                subtitles: [{
+                    text: "ID/MS"
+                }],
+				data: [
+				{
+                        type: "column",
+                        //color: "green",
+					dataPoints: @Html.Raw(ViewBag.DataPoints),
+				}
+				]
+			});
+			chart.render();
+		};
+</script>

@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -14,44 +12,47 @@ namespace TestWork.Models
     {
         List<string> linkList = new List<string>();
         List<Map> result = new List<Map>();
-        string chekurl = null;
         public List<string> SiteMap(string url)
         {
             WebClient wc = new WebClient();
             wc.Headers["User-Agent"] = "Mozilla/5.0";
             wc.Encoding = System.Text.Encoding.UTF8;
-
-            chekurl = ValidateUrl.CheckURL(url);
-
-            string sitemapString = wc.DownloadString(chekurl);
-            XmlDocument urldoc = new XmlDocument();
-            urldoc.LoadXml(sitemapString);
-
-            //with <url>
-            XmlNodeList xmlSitemapList = urldoc.GetElementsByTagName("url");
-            if (xmlSitemapList.Count != 0)
+            try
             {
-                foreach (XmlNode node in xmlSitemapList)
+                string sitemapString = wc.DownloadString(url);
+                XmlDocument urldoc = new XmlDocument();
+                urldoc.LoadXml(sitemapString);
+
+                //with <url>
+                XmlNodeList xmlSitemapList = urldoc.GetElementsByTagName("url");
+                if (xmlSitemapList.Count != 0)
                 {
-                    if (node["loc"] != null)
+                    foreach (XmlNode node in xmlSitemapList)
                     {
-                        linkList.Add(node["loc"].InnerText);
+                        if (node["loc"] != null)
+                        {
+                            linkList.Add(node["loc"].InnerText);
+                        }
                     }
                 }
-            }
-            //with <sitemap>
-            else
-            {
-                xmlSitemapList = urldoc.GetElementsByTagName("sitemap");
-                foreach (XmlNode node in xmlSitemapList)
+                //with <sitemap>
+                else
                 {
-                    if (node["loc"] != null)
+                    xmlSitemapList = urldoc.GetElementsByTagName("sitemap");
+                    foreach (XmlNode node in xmlSitemapList)
                     {
-                        linkList.Add(node["loc"].InnerText);
+                        if (node["loc"] != null)
+                        {
+                            linkList.Add(node["loc"].InnerText);
+                        }
                     }
                 }
+                return linkList;
             }
-            return linkList;
+            catch(XmlException ex)
+            {
+                return null;
+            }
         }
         public List<Map> LoadingTimeForUrl(List<string> url)
         {
