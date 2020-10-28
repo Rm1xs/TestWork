@@ -3,9 +3,6 @@
     ViewBag.Title = "Home Page";
 }
 
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.js"></script>
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css" />
-<script src="~/Scripts/valid.js"></script>
 <script>
     function isValidUrl() {
         try {
@@ -13,6 +10,7 @@
             new URL(val);
         } catch (_) {
             event.preventDefault();
+            document.getElementById('website').value = "";
             alert("Invalid url");
         }
         return true;
