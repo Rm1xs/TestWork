@@ -49,7 +49,8 @@ namespace TestWork.Models
                 }
                 return linkList;
             }
-            catch(XmlException ex)
+            //catch if not sitemap or not xml structure
+            catch (XmlException ex)
             {
                 return null;
             }

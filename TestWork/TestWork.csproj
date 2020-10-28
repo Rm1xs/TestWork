@@ -216,6 +216,7 @@
     </Compile>
     <Compile Include="Models\DataPoint.cs" />
     <Compile Include="EF\Db.cs" />
+    <Compile Include="Models\FindSiteMap.cs" />
     <Compile Include="Models\GetSiteMap.cs" />
     <Compile Include="Models\Map.cs" />
     <Compile Include="Models\ValidateUrl.cs" />

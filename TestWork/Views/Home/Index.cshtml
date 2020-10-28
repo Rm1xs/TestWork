@@ -18,13 +18,22 @@
         return true;
     }
 </script>
-<script>
-    if (@ViewData["Message"] != null)
-    {
-        alert(@ViewData["Message"]);
-        @ViewData["Message"] = null;
-    }
-</script>
+@if (@ViewData["Message"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top:2%;">
+        @ViewData["Message"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+@*<script>
+        if (@ViewData["Message"] != null)
+        {
+            alert(@ViewData["Message"]);
+            @ViewData["Message"] = null;
+        }
+    </script>*@
 <form action="/Home/Index" method="post" style="margin-top:2%;">
     <div class="form-row" id="uriForm">
         <div class="col-md-6 mb-3">
@@ -36,8 +45,6 @@
     </div>
     <button onclick="isValidUrl()" class="btn btn-primary" type="submit">Submit</button>
 </form>
-
-
 <div id="chartContainer" style="height: 350px;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 @if (Model != null)

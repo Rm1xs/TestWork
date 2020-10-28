@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
-using System.Xml;
 using TestWork.EF;
 using TestWork.Models;
 
@@ -21,15 +20,15 @@ namespace TestWork.Controllers
         [HttpPost]
         public ActionResult Index(string website)
         {
-            try
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            GetSiteMap map = new GetSiteMap();
+            string checkurl = ValidateUrl.CheckURL(website);
+
+
+            var sitemap = map.SiteMap(checkurl);
+            if (sitemap != null)
             {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                GetSiteMap map = new GetSiteMap();
-                string checkurl = ValidateUrl.CheckURL(website);
-
-
-                var sitemap = map.SiteMap(checkurl);
                 var result = map.LoadingTimeForUrl(sitemap);
                 result = result.OrderByDescending(e => Convert.ToInt32(e.Speed)).ToList();
                 var chart = map.ConvertToChartData(result);
@@ -38,15 +37,12 @@ namespace TestWork.Controllers
                 Db db = new Db();
                 db.AddToDb(result, ValidateUrl.CheckURL(website), sw.Elapsed.TotalSeconds.ToString());
                 return View(result);
-
             }
-            catch(WebException ex)
+            else
             {
-                ViewData["Message"] = "Could not find sitemap.xml for this site!";
+                ViewData["Message"] = "Sitemap not found! Searching for this url - " + checkurl;
                 return View();
             }
-
-
         }
         public ActionResult History()
         {
