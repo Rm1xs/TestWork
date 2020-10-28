@@ -54,6 +54,10 @@ namespace TestWork.Models
             {
                 return null;
             }
+            catch(WebException ex)
+            {
+                return null;
+            }
         }
         public List<Map> LoadingTimeForUrl(List<string> url)
         {
@@ -76,7 +80,6 @@ namespace TestWork.Models
                     tasks.Add(task);
                 }
                 Task.WaitAll(tasks.ToArray());
-
             }
             catch (WebException e)
             {
