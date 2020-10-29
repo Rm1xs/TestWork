@@ -1,4 +1,6 @@
-﻿namespace TestWork.Models
+﻿using System;
+
+namespace TestWork.Models
 {
     public static class ValidateUrl
     {

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -58,7 +59,7 @@ namespace TestWork.Models
             {
                 return null;
             }
-        }
+        }    
         public List<Map> LoadingTimeForUrl(List<string> url)
         {
             try
@@ -74,8 +75,20 @@ namespace TestWork.Models
                         request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36";
                         WebResponse responce = request.GetResponse();
                         sw.Stop();
-                        result.Add(new Map { IdNumb = countId, Url = check, Speed = sw.ElapsedMilliseconds.ToString() });
-                        countId++;
+                        string urlfoorm = null;
+                        if (check.Contains("?") == true)
+                        {
+                            int pos = check.LastIndexOf('?');
+                            string bbb = check.Substring(pos);
+                            urlfoorm = check.Substring(0, pos);
+                            result.Add(new Map { IdNumb = countId, Url = urlfoorm, Speed = sw.ElapsedMilliseconds.ToString() });
+                            countId++;
+                        }
+                        else
+                        {
+                            result.Add(new Map { IdNumb = countId, Url = check, Speed = sw.ElapsedMilliseconds.ToString() });
+                            countId++;
+                        }
                     });
                     tasks.Add(task);
                 }

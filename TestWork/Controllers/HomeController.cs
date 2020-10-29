@@ -25,7 +25,6 @@ namespace TestWork.Controllers
             GetSiteMap map = new GetSiteMap();
             string checkurl = ValidateUrl.CheckURL(website);
 
-
             var sitemap = map.SiteMap(checkurl);
             if (sitemap != null)
             {
@@ -40,8 +39,36 @@ namespace TestWork.Controllers
             }
             else
             {
-                ViewData["Message"] = "Sitemap not found! Searching for this url - " + checkurl;
-                return View();
+                ViewData["MessageGood"] = "Generated sitemap by the program";
+                SiteMapGenerator generator = new SiteMapGenerator();
+                sw.Start();
+                var site = generator.ParseSite(website);
+                if (site != null)
+                {
+                    var res = generator.SiteMapCreator(site);
+                    var load = generator.SiteMap(res);
+                    if (load != null)
+                    {
+                        var result = map.LoadingTimeForUrl(load);
+                        result = result.OrderByDescending(e => Convert.ToInt32(e.Speed)).ToList();
+                        var chart = map.ConvertToChartData(result);
+                        ViewBag.DataPoints = chart;
+                        sw.Stop();
+                        Db db = new Db();
+                        db.AddToDb(result, website, sw.Elapsed.TotalSeconds.ToString());
+                        return View(result);
+                    }
+                    else
+                    {
+                        ViewData["MessageBad"] = "Url has an invalid structure";
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewData["MessageBad"] = "Not found urls to generate sitemap";
+                    return View();
+                }
             }
         }
         public ActionResult History()
