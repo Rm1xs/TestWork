@@ -40,6 +40,7 @@ namespace TestWork.Controllers
             else
             {
                 ViewData["MessageGood"] = "Generated sitemap by the program";
+                ViewData["Search"] = "true";
                 SiteMapGenerator generator = new SiteMapGenerator();
                 sw.Start();
                 var site = generator.ParseSite(website);

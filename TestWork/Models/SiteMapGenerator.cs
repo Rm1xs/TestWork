@@ -38,7 +38,6 @@ namespace TestWork.Models
                         {
                             newurl.Add(link.GetAttribute("href"));
                         }
-
                     }
                 }
                 var uniqurl = newurl.Distinct();

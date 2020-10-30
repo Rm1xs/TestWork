@@ -11,7 +11,7 @@
         } catch (_) {
             event.preventDefault();
             document.getElementById('website').value = "";
-            alert("Invalid url");
+            alert("Not valid url");
         }
         return true;
     }
@@ -34,13 +34,7 @@
         </button>
     </div>
 }
-@*<script>
-        if (@ViewData["Message"] != null)
-        {
-            alert(@ViewData["Message"]);
-            @ViewData["Message"] = null;
-        }
-    </script>*@
+
 <form action="/Home/Index" method="post" style="margin-top:2%;">
     <div class="form-row" id="uriForm">
         <div class="col-md-6 mb-3">
@@ -52,6 +46,13 @@
     </div>
     <button onclick="isValidUrl()" class="btn btn-primary" type="submit">Submit</button>
 </form>
+@*@if (ViewData["Search"] != null)
+{
+<form action="/Home/Index" method="post" style="margin-top:2%;">
+    <input id="data" type="text" class="form-control invisible" name="data" value="@Model.ToList()" />
+    <button class="badge badge-warning" type="submit" data-toggle="tooltip" data-placement="right" title="Serching urls in current url"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Advanced Search</button>
+</form>
+}*@
 <div id="chartContainer" style="height: 350px;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 @if (Model != null)
@@ -109,4 +110,9 @@
 			});
 			chart.render();
 		};
+</script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 </script>
