@@ -39,7 +39,6 @@ namespace TestWork.Controllers
             }
             else
             {
-                ViewData["MessageGood"] = "Generated sitemap by the program";
                 ViewData["Search"] = "true";
                 SiteMapGenerator generator = new SiteMapGenerator();
                 sw.Start();
@@ -57,6 +56,7 @@ namespace TestWork.Controllers
                         sw.Stop();
                         Db db = new Db();
                         db.AddToDb(result, website, sw.Elapsed.TotalSeconds.ToString());
+                        ViewData["MessageGood"] = "Generated sitemap by the program";
                         return View(result);
                     }
                     else
