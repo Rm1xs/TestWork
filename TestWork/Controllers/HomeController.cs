@@ -61,7 +61,7 @@ namespace TestWork.Controllers
                     }
                     else
                     {
-                        ViewData["MessageBad"] = "Url has an invalid structure";
+                        ViewData["MessageBad"] = "Urls has an invalid structure or error in parsing process";
                         return View();
                     }
                 }
