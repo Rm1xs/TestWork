@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -55,49 +54,69 @@ namespace TestWork.Models
             {
                 return null;
             }
-            catch(WebException ex)
+            catch (WebException ex)
             {
                 return null;
             }
-        }    
+        }
         public List<Map> LoadingTimeForUrl(List<string> url)
         {
-            try
+
+            int countId = 1;
+            List<Task> tasks = new List<Task>();
+            foreach (var check in url)
             {
-                int countId = 1;
-                List<Task> tasks = new List<Task>();
-                foreach (var check in url)
+                Task task = Task.Run(() =>
                 {
-                    Task task = Task.Run(() =>
+                    try
                     {
-                        var sw = Stopwatch.StartNew();
-                        var request = (HttpWebRequest)WebRequest.Create(check);
-                        request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36";
-                        WebResponse responce = request.GetResponse();
-                        sw.Stop();
-                        string urlfoorm = null;
-                        if (check.Contains("?") == true)
+                        if (Uri.IsWellFormedUriString(check, UriKind.Absolute))
                         {
-                            int pos = check.LastIndexOf('?');
-                            string bbb = check.Substring(pos);
-                            urlfoorm = check.Substring(0, pos);
-                            result.Add(new Map { IdNumb = countId, Url = urlfoorm, Speed = sw.ElapsedMilliseconds.ToString() });
-                            countId++;
+                            var sw = Stopwatch.StartNew();
+                            Uri myUri = new Uri(check);
+                            var request = (HttpWebRequest)WebRequest.Create(check);
+                            request.Method = "GET";
+                            request.AllowAutoRedirect = false;
+                            request.Credentials = CredentialCache.DefaultCredentials;
+                            request.Accept = "*/*";
+                            request.ContentType = "application/x-www-form-urlencoded";
+
+                            //request.Proxy = new System.Net.WebProxy("193.203.11.229", 8085);
+                            request.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5";
+                            WebResponse responce = request.GetResponse();
+                            sw.Stop();
+                            string urlfoorm = null;
+                            if (check.Contains("?") == true)
+                            {
+                                int pos = check.LastIndexOf('?');
+                                string bbb = check.Substring(pos);
+                                urlfoorm = check.Substring(0, pos);
+                                result.Add(new Map { IdNumb = countId, Url = urlfoorm, Speed = sw.ElapsedMilliseconds.ToString() });
+                                countId++;
+                            }
+                            else
+                            {
+                                result.Add(new Map { IdNumb = countId, Url = check, Speed = sw.ElapsedMilliseconds.ToString() });
+                                countId++;
+                            }
                         }
-                        else
-                        {
-                            result.Add(new Map { IdNumb = countId, Url = check, Speed = sw.ElapsedMilliseconds.ToString() });
-                            countId++;
-                        }
-                    });
-                    tasks.Add(task);
-                }
-                Task.WaitAll(tasks.ToArray());
+                    }
+                    catch (UriFormatException e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                    //catch (WebException e)
+                    //{
+                    //    Console.WriteLine(e);
+                    //}
+                    catch (InvalidCastException e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                });
+                tasks.Add(task);
             }
-            catch (WebException e)
-            {
-                Console.WriteLine(e);
-            }
+            Task.WaitAll(tasks.ToArray());
             return result;
         }
         public string ConvertToChartData(List<Map> result)

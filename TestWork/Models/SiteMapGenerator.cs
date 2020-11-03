@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using System.Xml;
 
 namespace TestWork.Models
@@ -17,6 +14,7 @@ namespace TestWork.Models
     {
         public IEnumerable<string> ParseSite(string url)
         {
+            Uri myUri = new Uri(url);
             List<Task> tasks = new List<Task>();
             try
             {
@@ -38,17 +36,18 @@ namespace TestWork.Models
                     {
                         if (link.GetAttribute("href") != null)
                         {
-                            if (IsUrlValid(link.GetAttribute("href"), url) == true)
+                            var urldata = IsUrlValid(link.GetAttribute("href"), url);
+                            if (urldata != null)
                             {
-                                newurl.Add(link.GetAttribute("href"));
+                                newurl.Add(urldata);
                             }
                         }
                     });
                     tasks.Add(task);
                 }
                 Task.WaitAll(tasks.ToArray());
+
                 var uniqurl = newurl.Distinct();
-                //var includeChaild = FoundChildUrl(uniqurl);
                 return uniqurl;
             }
 
@@ -57,37 +56,6 @@ namespace TestWork.Models
                 return null;
             }
         }
-
-        //public IEnumerable<string> FoundChildUrl(IEnumerable<string> urls)
-        //{
-        //    string data = null;
-        //    List<string> newurl = new List<string>();
-        //    foreach (var item in urls)
-        //    {
-        //        using (WebClient wc = new WebClient())
-        //        {
-        //            wc.Headers["User-Agent"] = "Mozilla/5.0";
-        //            wc.Encoding = System.Text.Encoding.UTF8;
-        //            data = wc.DownloadString(item);
-        //        }
-        //        var parser = new HtmlParser();
-        //        var document = parser.ParseDocument(data);
-        //        var links = document.QuerySelectorAll("a");
-        //        foreach (var link in links)
-        //        {
-        //            if (link.GetAttribute("href") != null)
-        //            {
-        //                if (IsUrlValid(link.GetAttribute("href"), item) == true)
-        //                {
-        //                    newurl.Add(link.GetAttribute("href"));
-        //                }
-        //            }
-        //        }
-        //    }
-        //    var uniqurl = newurl.Distinct();
-        //    var together = urls.Concat(uniqurl);
-        //    return together;
-        //}
         public string SiteMapCreator(IEnumerable<string> url)
         {
             try
@@ -162,26 +130,104 @@ namespace TestWork.Models
                 return null;
             }
         }
-        private bool IsUrlValid(string url, string domain)
+        private string IsUrlValid(string url, string domein)
         {
-            Uri myUri = new Uri(domain);
-            string host = myUri.Host;
-            if (url.Contains(host))
+            Uri myUri = new Uri(domein);
+            string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
+            Regex reg = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            if (reg.IsMatch(url) == true)
             {
-                if (url.Contains("http") || url.Contains("https"))
+                if (url.Contains("http://") || url.Contains("https://"))
                 {
-                    string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
-                    Regex reg = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                    return reg.IsMatch(url);
+                    if (url.Contains(myUri.Host))
+                    {
+                        if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                        {
+                            return url;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return false;
+                    if (url.Contains("//"))
+                    {
+                        if (url.Contains(myUri.Host))
+                        {
+                            if (Uri.IsWellFormedUriString(myUri.Scheme + "://" + url, UriKind.Absolute))
+                            {
+                                return myUri.Scheme + "://" + url;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        if (Uri.IsWellFormedUriString(myUri.Scheme + "://" + url, UriKind.Absolute))
+                        {
+                            if (url.Contains(myUri.Host))
+                            {
+                                return myUri.Scheme + "://" + url;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        }
+
+                        else
+                        {
+                            return null;
+                        }
+                    }
                 }
             }
             else
             {
-                return false;
+                if (!url.Contains("http://") || !url.Contains("https://"))
+                {
+                    url = myUri.Scheme + "://" + myUri.Host + url;
+                    if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                    {
+                        return url;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    if (url.Contains(myUri.Host))
+                    {
+                        if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                        {
+                            return url;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
             }
         }
     }

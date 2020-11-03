@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
-using System.Xml;
 using TestWork.EF;
 using TestWork.Models;
 
@@ -49,7 +48,7 @@ namespace TestWork.Controllers
                     var res = generator.SiteMapCreator(site);
                     ViewData["XML"] = res;
                     var load = generator.SiteMap(res);
-                    if (load != null)
+                    if (load.Count != 0)
                     {
                         var result = map.LoadingTimeForUrl(load);
                         result = result.OrderByDescending(e => Convert.ToInt32(e.Speed)).ToList();
@@ -58,18 +57,18 @@ namespace TestWork.Controllers
                         sw.Stop();
                         Db db = new Db();
                         db.AddToDb(result, website, sw.Elapsed.TotalSeconds.ToString());
-                        ViewData["MessageGood"] = "Generated sitemap by the program";
+                        ViewData["MessageGood"] = "Generated successful";
                         return View(result);
                     }
                     else
                     {
-                        ViewData["MessageBad"] = "Urls has an invalid structure or error in parsing process";
+                        ViewData["MessageBad"] = "Not found urls to generate sitemap";
                         return View();
                     }
                 }
                 else
                 {
-                    ViewData["MessageBad"] = "Not found urls to generate sitemap";
+                    ViewData["MessageBad"] = "Urls has an invalid structure or error in parsing process";
                     return View();
                 }
             }
