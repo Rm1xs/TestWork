@@ -369,6 +369,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Home\History.cshtml" />
     <Content Include="Views\Home\Details.cshtml" />
+    <Content Include="Views\Home\SiteMap.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

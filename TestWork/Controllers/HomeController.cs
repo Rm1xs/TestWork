@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using System.Xml;
 using TestWork.EF;
 using TestWork.Models;
 
@@ -46,6 +47,7 @@ namespace TestWork.Controllers
                 if (site != null)
                 {
                     var res = generator.SiteMapCreator(site);
+                    ViewData["XML"] = res;
                     var load = generator.SiteMap(res);
                     if (load != null)
                     {

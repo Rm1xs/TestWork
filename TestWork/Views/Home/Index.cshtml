@@ -46,13 +46,17 @@
     </div>
     <button onclick="isValidUrl()" class="btn btn-primary" type="submit">Submit</button>
 </form>
+
+
+
+
 @*@if (ViewData["Search"] != null)
-{
-<form action="/Home/Index" method="post" style="margin-top:2%;">
-    <input id="data" type="text" class="form-control invisible" name="data" value="@Model.ToList()" />
-    <button class="badge badge-warning" type="submit" data-toggle="tooltip" data-placement="right" title="Serching urls in current url"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Advanced Search</button>
-</form>
-}*@
+    {
+    <form action="/Home/Index" method="post" style="margin-top:2%;">
+        <input id="data" type="text" class="form-control invisible" name="data" value="@Model.ToList()" />
+        <button class="badge badge-warning" type="submit" data-toggle="tooltip" data-placement="right" title="Serching urls in current url"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Advanced Search</button>
+    </form>
+    }*@
 <div id="chartContainer" style="height: 350px;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 @if (Model != null)

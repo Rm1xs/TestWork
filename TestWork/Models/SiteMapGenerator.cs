@@ -168,9 +168,16 @@ namespace TestWork.Models
             string host = myUri.Host;
             if (url.Contains(host))
             {
-                string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
-                Regex reg = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                return reg.IsMatch(url);
+                if (url.Contains("http") || url.Contains("https"))
+                {
+                    string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
+                    Regex reg = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    return reg.IsMatch(url);
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
